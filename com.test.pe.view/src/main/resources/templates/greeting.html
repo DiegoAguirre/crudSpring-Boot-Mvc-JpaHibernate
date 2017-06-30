@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<title>Getting Started: Serving Web Content</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<p th:text="'Hello, ' + ${name} + '!'" />
+	<form id="frmRegister" action="#" th:action="@{/auditory/add}"
+		th:object="${auditory}" method="post" data-toggle="validator"
+		role="form">
+		<input type="hidden" id="idAuditory" th:field="*{idAuditory}" /> <input
+			type="hidden" id="idEmployee" th:field="*{idEmployee}" /> <input
+			type="hidden" id="idShop" th:field="*{idShop}" /> <input
+			type="hidden" id="dateRegistry" th:field="*{dateRegistry}" />
+		<table style="width: 100%">
+			<tr>
+			</tr>
+			<tr>
+				<td>Empleado :</td>
+				<td><select class="form-control" id="employee" name="employee">
+						<option value="">Select Employee</option>
+						<option th:each="employee : ${employees}"
+							th:value="${employee.id}"
+							th:text="${employee.id}+' : '+${employee.name}"></option>
+				</select></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Tienda :</td>
+				<td><select class="form-control" id="shop" name="shop">
+						<option value="">Select Shop</option>
+						<option th:each="shop : ${shops}" th:value="${shop.id}"
+							th:text="${shop.id}+' : '+${shop.name}"></option>
+				</select></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Fecha :</td>
+				<td><input type="datetime" id="dtRegistry"
+					placeholder="yyyy-MM-dd HH:mm:ss" required="required" /></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input id="btnGrabar" type="button"
+					value="Grabar" /></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="frmTest"></div>
+				</td>
+			</tr>
+		</table>
+
+	</form>
+	<script>
+		$("#btnGrabar").click(function(e) {
+			e.preventDefault();
+			$("#idEmployee").val($("#shop").val());
+			$("#idShop").val($("#employee").val());
+			$("#dateRegistry").val($("#dtRegistry").val());
+			$.ajax({
+				type : "POST",
+				url : "/main/save",
+				data : $("#frmRegister").serialize(),
+				success : function(data, textStatus, jqXHR) {
+					$('#frmRegister')[0].reset();
+					$("#frmTest").html(jqXHR.responseText);
+				}
+			});
+
+		});
+	</script>
+</body>
+</html>
